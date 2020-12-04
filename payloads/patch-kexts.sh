@@ -843,6 +843,9 @@ then
             RESULT=`/usr/libexec/PlistBuddy -c "Print:$MYBOARD:ContinuitySupport" "IOBluetooth.framework/Versions/A/Resources/SystemParameters.plist"`
             
             echo 'Continuity for ' $MYBOARD 'set to: ' $RESULT
+            
+            fixPerms IOBluetooth.framework
+
         else
             echo 'your system with board-id' $MYBOARD 'has no black list entry'
             echo 'and will possibly support Continuity and HandOff out of the box.'
