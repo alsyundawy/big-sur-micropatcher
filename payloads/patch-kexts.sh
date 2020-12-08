@@ -902,7 +902,7 @@ then
         then
             rm com.apple.security.libraryvalidation.plist
         else
-            cp com.apple.security.libraryvalidation.plist com.apple.security.libraryvalidation.plist.original
+            mv com.apple.security.libraryvalidation.plist com.apple.security.libraryvalidation.plist.original
         fi
             
         exzip "$IMGVOL/Preferences/com.apple.security.libraryvalidation.plist.zip"
