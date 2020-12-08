@@ -13,6 +13,14 @@ errorCheck() {
     fi
 }
 
+# Perform unzip with error checking. (exzip = extract zip)
+# I considered playing capitalization tricks with "unzip" but figured
+# that might be more confusing than just using a different name.
+exzip() {
+    unzip -q "$1"
+    errorCheck unzip
+}
+
 # In the current directory, check for kexts which have been renamed from
 # *.kext to *.kext.original, then remove the new versions and rename the
 # old versions back into place.
