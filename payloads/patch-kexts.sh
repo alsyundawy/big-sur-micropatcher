@@ -922,8 +922,7 @@ then
         else
             mv CoreBrightness.framework CoreBrightness.framework.original
         fi
-        
-        
+                
         exzip "$IMGVOL/PrivateFrameworks/CoreBrightness.framework.zip"
 
         fixPerms CoreBrightness.framework
@@ -1071,6 +1070,11 @@ else
 
     # CoreBrightness.framework and possibly AppleGVA.framework
     pushd "$VOLUME/System/Library/PrivateFrameworks" > /dev/null
+    restoreOriginals
+    popd > /dev/null
+    
+    # /Library/Preferences
+    pushd "$VOLUME/Library/Preferences" > /dev/null
     restoreOriginals
     popd > /dev/null
 
