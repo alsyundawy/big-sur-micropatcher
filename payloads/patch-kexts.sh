@@ -107,17 +107,19 @@ do
         echo "Using mojave-hybrid WiFi patch to override default."
         INSTALL_WIFI="mojave-hybrid"
         ;;
-    --ns)
+    --whitelist)
         echo "Experimental: Whitelist entry for Continuity and HandOff"
         INSTALL_WHITELIST="YES"
         ;;
     --ns)
         echo "Experimental: Using @jackluke patched CoreBrightness.framework to enable Night Shift"
         INSTALL_NIGHTSHIFT="YES"
+        DISABLE_LIBRARY_VALIDATION="YES"
         ;;
     --gva)
         echo "Experimental: Using @jackluke patched AppleGVA.framework to enable iGPU support on Sandy Bridge systems"
         INSTALL_APPLEGVA="YES"
+        DISABLE_LIBRARY_VALIDATION="YES"
         ;;
     --force)
         FORCE=YES
@@ -881,6 +883,25 @@ then
         popd > /dev/null
     fi
 
+    if [ "x$DISABLE_LIBRARY_VALIDATION" = "xYES" ]
+    then
+       echo 'Disable Library Validation'
+        
+        # defaults write /Library/Preferences/com.apple.security.libraryvalidation.plist DisableLibraryValidation -bool true
+        pushd "$VOLUME/Library/Preferences" > /dev/null
+
+        if [ -f com.apple.security.libraryvalidation.plist.original ]
+        then
+            rm com.apple.security.libraryvalidation.plist
+        else
+            cp com.apple.security.libraryvalidation.plist com.apple.security.libraryvalidation.plist.original
+        fi
+            
+        exzip "$IMGVOL/Preferences/com.apple.security.libraryvalidation.plist.zip"
+        
+        popd > /dev/null
+    fi
+    
     if [ "x$INSTALL_NIGHTSHIFT" = "xYES" ]
     then
         echo 'Installing patched CoreBrightness.framework for Night Shift'
@@ -894,10 +915,11 @@ then
             mv CoreBrightness.framework CoreBrightness.framework.original
         fi
         
-        unzip -q "$IMGVOL/kexts/CoreBrightness.framework.zip"
+        
+        exzip "$IMGVOL/PrivateFrameworks/CoreBrightness.framework.zip"
 
         fixPerms CoreBrightness.framework
-                
+        
         popd > /dev/null
     fi
 
