@@ -57,7 +57,7 @@ Incompatible Mac models:
 - Any Macs with a pre-Penryn CPU. Basically, this means the original MacBook Air as well as all 2006/2007 Macs (except for iMacs with upgraded CPUs).
 
 Currently not supported by this patcher, but future support may be possible:
-- 2010 15"/17" MacBook Pro, 2010 iMac, (if equipped with a Core i5/i7) Late 2009 27" iMac: A fix has been created, but it requires OpenCore. Even if OpenCore eventually turns out to be absolutely required for these Macs, a future release of this patcher may still be helpful in providing support for these Macs' hardware.
+- 2010 15"/17" MacBook Pro: A fix has been created, but it requires OpenCore. Even if OpenCore eventually turns out to be absolutely required for these Macs, a future release of this patcher may still be helpful in providing support for these Macs' hardware.
 - Macs which have a Penryn CPU but which do not officially support High Sierra: These include pre-2008 iMacs with upgraded CPUs, as well as all 2008 and most 2009 Mac models (any 2009 models not listed above). All of these require "legacy USB" support, just like (for instance) 2010 white MacBooks. Once support for those MacBooks is improved in a future patcher release, perhaps support for some of these Macs will be worth revisiting.
 - Without a Metal GPU upgrade (certainly possible on 2008 Mac Pros and possibly iMacs, but not possible on the MacBooks and Mac Minis), these are expected to be unusably slow.
 - As mentioned at the top of this README, 2008 Mac Pro owners should use StarPlayrX's Big Mac patcher instead of this patcher.
