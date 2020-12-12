@@ -898,10 +898,12 @@ then
         # defaults write /Library/Preferences/com.apple.security.libraryvalidation.plist DisableLibraryValidation -bool true
         pushd "$VOLUME/Library/Preferences" > /dev/null
 
+        # not clear if there will be such file in place
         if [ -f com.apple.security.libraryvalidation.plist.original ]
         then
             rm com.apple.security.libraryvalidation.plist
-        else
+        elif [ -f com.apple.security.libraryvalidation.plist ]
+        then
             mv com.apple.security.libraryvalidation.plist com.apple.security.libraryvalidation.plist.original
         fi
             
