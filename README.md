@@ -3,7 +3,7 @@ A primitive USB patcher for installing macOS Big Sur on unsupported Macs
 
 By the way, if you have a Mac Pro, [Big Mac](https://github.com/StarPlayrX/bigmac) by StarPlayrX is another patcher worth considering. For 2008 Mac Pros (MacPro3,1) in particular, Big Mac is clearly a better option than this patcher (at least for now).
 
-This fork is a copy of the current 0.5.1 version @Barry K. Nathan developed and published enhanced with all necessary patches to install Big Sur on iMac models as: iMac 27" Late 2009 (core i series CPU), iMac Mid 2010 (all systems), iMac Mid 2011 (all systems) if these systens have been upgraded with an metal GPU in advance. You may also install Big Sur on stock Apple iMac models listed above, but without graphics accerelation the usability will be near the absolute Zero. 
+This fork is a copy of the current 0.5.1 version @Barry K. Nathan developed and published enhanced with all necessary patches to install Big Sur on iMac models as: iMac 27" Late 2009 (core i series CPU), iMac Mid 2010 (all systems), iMac Mid 2011 (all systems) if these iMacs have been upgraded with an metal GPU in advance. You may also install Big Sur on stock Apple iMac models listed above, but without graphics accerelation the usability will be near the absolute Zero. 
 
 You may use this patcher as a 100% replacement to the current original. No features have been deleted. There are only enhancements.
 
