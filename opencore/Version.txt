@@ -1,0 +1,2 @@
+OpenCore based on version 0.6.5 (0.6.5 DRM fix)
+

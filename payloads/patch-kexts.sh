@@ -129,6 +129,14 @@ do
         INSTALL_APPLEGVA="YES"
         DISABLE_LIBRARY_VALIDATION="YES"
         ;;
+    --model=iMac12)
+        echo "Experimental: selected model iMac12,x"
+        MODEL="iMac12,1"
+        ;;
+    --model=iMac11)
+        echo "Experimental: selected model iMac11,x"
+        MODEL="iMac11,1"
+        ;;
     --force)
         FORCE=YES
         ;;
@@ -194,8 +202,13 @@ if [ -z "$PATCHMODE" ]
 then
     echo "No patch mode specified on command line. Detecting Mac model..."
     echo "(Use --2010, --2011, or --2012 command line option to override.)"
-    MODEL=`sysctl -n hw.model`
-    echo "Detected model: $MODEL"
+    if [ -z "$MODEL" ]
+    then
+        MODEL=`sysctl -n hw.model`
+        echo "Detected model: $MODEL"
+    else
+        echo "Command line argument model: $MODEL"
+    fi
     case $MODEL in
     # Macs which are incompatible because of pre-Penryn CPUs.
     # This script is highly unlikely to ever execute on these, but I have
@@ -238,17 +251,19 @@ then
         ;;
     iMac11,?)
         echo "Detected a Late 2009 or Mid 2010 11,x iMac. Using special iMac 11,x patch mode."
-        echo "You need OpenCore 0.6.3 and the khronokernel DSDT patch to boot this machines!"
+        echo "You need OpenCore 0.6.4 and the khronokernel DSDT patch to boot this machines!"
         # sleep 10
-        PATCHMODE=--IMAC11
-        INSTALL_IMAC0910="YES"
+        PATCHMODE=--2011
+        INSTALL_IMACMETAL="YES"
+        INSTALL_MCCS="NO"
         INSTALL_APPLEGVA="NO"
         ;;
     iMac12,?)
         echo "Detected a Mid 2011 12,x iMac. Using --2011 patch mode."
         PATCHMODE=--2011
-        INSTALL_IMAC2011="YES"
+        INSTALL_IMACMETAL="YES"
         INSTALL_MCCS="YES"
+        INSTALL_APPLEGVA="NO"
         ;;
     Macmini6,?|MacBookAir5,?|MacBookPro9,?|MacBookPro10,?|iMac13,?)
         echo "Detected a 2012-2013 Mac. Using --2012 patch mode."
@@ -321,13 +336,21 @@ case $PATCHMODE in
     ;;
 esac
 
+#
+# force exit for debugging command line funtionality
+#
+# exit 0
+
 if [ "x$RECOVERY" = "xNO" ]
 then
     # Outside the recovery environment, we need to check SIP &
     # authenticated-root (both need to be disabled)
     if [ "x$FORCE" != "xYES" ]
     then
-        CSRVAL="`nvram csr-active-config|sed -e 's/^.*	//'`"
+        CSRVAL="`nvram csr-active-config|sed -e 's/^.*    //'| awk '{print $2}'`"
+        #
+        # CSRVAL="`nvram csr-active-config|sed -e 's/^.*    //'`"
+        #
         case $CSRVAL in
         w%0[89f]* | %[7f]f%0[89f]*)
             ;;
@@ -343,8 +366,6 @@ then
         esac
     fi
 fi
-
-
 
 # Now figure out what volume we're installing to.
 VOLUME="$1"
@@ -658,6 +679,9 @@ then
         esac
     fi
 
+    #
+    # this is basically the iMac 2011 specific part
+    #
     if [ "x$INSTALL_MCCS" = "xYES" ]
     then
         echo 'Installing Catalina (for iMac 2011) AppleMCCSControl.kext'
@@ -671,15 +695,7 @@ then
         unzip -q "$IMGVOL/kexts/AppleMCCSControl.kext.zip"
         
         fixPerms AppleMCCSControl.kext
-    fi
-
-    #
-    # install patches needed by the iMac 2011 family (metal GPU, only)
-    #
-    if [ "x$INSTALL_IMAC2011" = "xYES" ]
-    then
-        # this will any iMac 2011 need
-        # install the iMacFamily extensions
+        
         echo "Installing highvoltage12v patches for iMac 2011 family"
         echo "Using SNB and HD3000 VA bundle files"
 
@@ -688,13 +704,32 @@ then
         
         fixPerms AppleIntelHD3000GraphicsVADriver.bundle
         fixPerms AppleIntelSNBVA.bundle
-                
+        
+        echo "Using iMacPro1,1 enabled version of AppleIntelSNBGraphicsFB.kext"
+        echo "WhateverGreen and Lilu need to be injected by OpenCore"
+        rm -rf AppleIntelSNBGraphicsFB.kext
+        unzip -q "$IMGVOL/kexts/AppleIntelSNBGraphicsFB-AMD.kext.zip"
+        # rename AppleIntelSNBGraphicsFB-AMD.kext
+        mv AppleIntelSNBGraphicsFB-AMD.kext AppleIntelSNBGraphicsFB.kext
+        fixPerms AppleIntelSNBGraphicsFB.kext
+
+    fi
+
+    #
+    # install patches needed by the iMac Late 2009, Mid 2010 and Mid 2011 family (metal GPU, only)
+    #
+    if [ "x$INSTALL_IMACMETAL" = "xYES" ]
+    then
+        # this will any iMac 2011 need
+        # install the iMacFamily extensions
+                 
         DID=`/usr/sbin/chroot "$VOLUME" /usr/sbin/system_profiler SPDisplaysDataType | fgrep "Device ID" | awk '{print $3}'`
     
         case $DID in
             # OpenCore: K610M, K1100M, K2100M
             0x12b9 | 0x0ff6 | 0x11fc)
             INSTALL_BACKLIGHT="YES"
+            INSTALL_AGC="YES"
             # INSTALL_APPLEGVA="YES"
             echo "NVIDIA K610M, K1100M, K2100M found, assume use of OC, device ID: " $DID
             ;;
@@ -703,82 +738,35 @@ then
             echo "AMD Polaris WX4130/WX4150/WX4170/WX7100/RX480 found, assume use of OC, device ID: " $DID
             INSTALL_AGC="NO"
             INSTALL_APPLEGVA="NO"
-            echo "Using iMacPro1,1 enabled version of AppleIntelSNBGraphicsFB.kext"
-            echo "WhateverGreen and Lilu need to be injected by OpenCore"
-            rm -rf AppleIntelSNBGraphicsFB.kext
-            unzip -q "$IMGVOL/kexts/AppleIntelSNBGraphicsFB-AMD.kext.zip"
-            # rename AppleIntelSNBGraphicsFB-AMD.kext
-            mv AppleIntelSNBGraphicsFB-AMD.kext AppleIntelSNBGraphicsFB.kext
-            fixPerms AppleIntelSNBGraphicsFB.kext
             ;;
-            0x67??)
-            echo "unknow AMD Polaris found, assume use of OC, device ID: " $DID
-            INSTALL_AGC="NO"
-            INSTALL_APPLEGVA="NO"
-            echo "Using iMacPro1,1 enabled version of AppleIntelSNBGraphicsFB.kext"
-            echo "WhateverGreen and Lilu need to be injected by OpenCore"
-            rm -rf AppleIntelSNBGraphicsFB.kext
-            unzip -q "$IMGVOL/kexts/AppleIntelSNBGraphicsFB-AMD.kext.zip"
-            # rename AppleIntelSNBGraphicsFB-AMD.kext
-            mv AppleIntelSNBGraphicsFB-AMD.kext AppleIntelSNBGraphicsFB.kext
-            fixPerms AppleIntelSNBGraphicsFB.kext
-            ;;
-            # NVIDIA witout OpenCore
+            # OpenCore: NVIDIA ++ cards
             0x1198 | 0x1199 | 0x119A | 0x119f | 0x119e |0x119d |0x11e0 | 0x11e1 | 0x11b8 | 0x11b7 | 0x11b6 | 0x11bc | 0x11bd | 0x11be |0x0ffb | 0x0ffc)
             echo "NVIDIA Kepler Kx100M, Kx000M, GTX8xx, GTX7xx Card found, assume no use of OC, device ID: " $DID
             INSTALL_BACKLIGHT="YES"
             INSTALL_BACKLIGHTFIXUP="YES"
-            INSTALL_VIT9696="YES"
+            INSTALL_VIT9696="NO"
             INSTALL_AGC="YES"
             # INSTALL_APPLEGVA="YES"
             ;;
-            *)
-            echo "Unknown GPU model. This may be a patcher bug, or the original Apple iMac ATI GPU which"
-            echo "is not really usable with Big Sur and will run without any graphics acceleration, device ID: " $DID
+            0x6720 | 0x6740 | 0x6741)
+            echo "Original AMD HD 67x0 card found, device ID: " $DID
+            echo "Big Sur and will run without any graphics acceleration"
             ;;
-        esac
-
-    fi
-
-    #
-    # install patches needed by the iMac 2009-2010 family (metal GPU, only)
-    # OC has to be used in any case, assuming injection of
-    # AppleBacklightFixup, FakeSMC, Lilu, WhateverGreen
-    #
-    if [ "x$INSTALL_IMAC0910" = "xYES" ]
-    then
-
-        DID=`/usr/sbin/chroot "$VOLUME" /usr/sbin/system_profiler SPDisplaysDataType | fgrep "Device ID" | awk '{print $3}'`
-        
-        case $DID in
-            # OpenCore: K610M, K1100M, K2100M
-            0x12b9 | 0x0ff6 | 0x11fc)
-            INSTALL_BACKLIGHT="YES"
-            INSTALL_AGC="YES"
-            echo "NVIDIA K610M, K1100M, K2100M found, use of OC, device ID: " $DID
+            0x68c1 | 0x68d8)
+            echo "Original AMD HD 5xx0 card found, device ID: " $DID
+            echo "Big Sur and will run without any graphics acceleration"
             ;;
-            # OpenCore; AMD Baffin cards
-            0x67e8 | 0x67e0 | 0x67c0 | 0x67df | 0x67ef)
-            echo "AMD Polaris WX4130/WX4150/WX4170/WX7100/RX480 found, use of OC, device ID: " $DID
-            INSTALL_AGC="NO"
+            0x9488 | 0x944a | 0x944b)
+            echo "Original AMD HD 4xx0 card found, device ID: " $DID
+            echo "Big Sur and will run without any graphics acceleration"
             ;;
             0x67??)
-            echo "unknow AMD Polaris found, assume use of OC, device ID: " $DID
-            INSTALL_AGC="NO"
-            ;;
-            # NVIDIA on 11,x with OpenCore
-            0x1198 | 0x1199 | 0x119A | 0x119f | 0x11e0 | 0x11e1 | 0x11b8 | 0x11b7 | 0x11b6 | 0x11bc | 0x11bd | 0x11be |0x0ffb | 0x0ffc)
-            echo "NVIDIA Kepler Kx100M, Kx000M, GTX8xx, GTX7xx Card found, use of OC, device ID: " $DID
-            echo "WhateverGreen and Lilu need to be injected by OpenCore"
-            INSTALL_BACKLIGHT="YES"
-            # IS THIS USEFUL?
-            INSTALL_BACKLIGHTFIXUP="YES"
-            INSTALL_VIT9696="NO"
-            INSTALL_AGC="YES"
+            echo "unknow AMD GPU found, device ID: " $DID
+            echo "Big Sur and will most likely run without any graphics acceleration"
             ;;
             *)
-            echo "Unknown GPU model. This may be a patcher bug, or the original Apple iMac ATI GPU which"
-            echo "is not really usable with Big Sur and will run without any graphics acceleration, device ID: " $DID
+            echo "Unknown GPU model. This may be a patcher bug, device ID: " $DID
+            echo "Big Sur and will likely run without any graphics acceleration"
             ;;
         esac
 
@@ -786,8 +774,7 @@ then
 
     if [ "x$INSTALL_AGC" = "xYES" ]
     then
-
-        echo 'Patching AppleGraphicsControl.kext with iMac 2009-2011 board-id'
+    
         /usr/libexec/PlistBuddy -c 'Add :IOKitPersonalities:AppleGraphicsDevicePolicy:ConfigMap:Mac-942B59F58194171B string none' AppleGraphicsControl.kext/Contents/PlugIns/AppleGraphicsDevicePolicy.kext/Contents/Info.plist
         /usr/libexec/PlistBuddy -c 'Add :IOKitPersonalities:AppleGraphicsDevicePolicy:ConfigMap:Mac-942B5BF58194151B string none' AppleGraphicsControl.kext/Contents/PlugIns/AppleGraphicsDevicePolicy.kext/Contents/Info.plist
         /usr/libexec/PlistBuddy -c 'Add :IOKitPersonalities:AppleGraphicsDevicePolicy:ConfigMap:Mac-F2268DAE string none' AppleGraphicsControl.kext/Contents/PlugIns/AppleGraphicsDevicePolicy.kext/Contents/Info.plist
@@ -835,37 +822,11 @@ then
     fi
     
     popd > /dev/null
-
-    if [ "x$INSTALL_WIFI" = "xNO" ]
-    then
-        pushd "$VOLUME/System/Library/Frameworks" > /dev/null
-        
-        # getting board-id of the system
-        MYBOARD=`/usr/sbin/ioreg -l | grep board-id | awk -F\" '{ print $4 }' | grep Mac`
-
-        # check if there exist a ContinuitySupport entry for this particular system
-        RESULT=`/usr/libexec/PlistBuddy -c "Print:$MYBOARD:ContinuitySupport" "IOBluetooth.framework/Versions/A/Resources/SystemParameters.plist"`
-
-        if [ "x$RESULT" = "xfalse" ]
-        then
-            echo 'patching for Continuity and HandOff for board-id ' $MYBOARD
-            
-            /usr/libexec/PlistBuddy -c "Set:$MYBOARD:ContinuitySupport true" "IOBluetooth.framework/Versions/A/Resources/SystemParameters.plist"
-            # read again and check
-            RESULT=`/usr/libexec/PlistBuddy -c "Print:$MYBOARD:ContinuitySupport" "IOBluetooth.framework/Versions/A/Resources/SystemParameters.plist"`
-            
-            echo 'Continuity for ' $MYBOARD 'set to: ' $RESULT
-            
-            fixPerms IOBluetooth.framework
-
-        else
-            echo 'your system with board-id' $MYBOARD 'has no black list entry'
-            echo 'and will possibly support Continuity and HandOff out of the box.'
-        fi
-        
-        popd > /dev/null
-    fi
- 
+    
+    
+    #
+    # extended whitelist patching for BCM94331CD (this is no 802.11ac card)
+    #
     if [ "x$INSTALL_WHITELIST" = "xYES" ]
     then
         pushd "$VOLUME/System/Library/Frameworks" > /dev/null
@@ -878,7 +839,7 @@ then
 
         if [ "x$RESULT" = "xfalse" ]
         then
-            echo 'patching for Continuity and HandOff for board-id ' $MYBOARD
+            echo 'patching IOBluetooth.framework for Continuity and HandOff for board-id ' $MYBOARD
             
             /usr/libexec/PlistBuddy -c "Set:$MYBOARD:ContinuitySupport true" "IOBluetooth.framework/Versions/A/Resources/SystemParameters.plist"
             # read again and check
@@ -889,9 +850,60 @@ then
             echo 'your system with board-id' $MYBOARD 'has no black list entry'
             echo 'and will possibly support Continuity and HandOff out of the box.'
         fi
+        fixPerms IOBluetooth.framework
+
+        popd > /dev/null
         
+        pushd "$VOLUME/System/Library/Extensions" > /dev/null
+ 
+        if [ "x$RESULT" = "xfalse" ]
+        then
+            pushd "$VOLUME/System/Library/Extensions" > /dev/null
+
+            echo 'patching IO80211Family.kext for Continuity and HandOff for board-id ' $MYBOARD
+            #
+            # this is currently not reversed by patch-kext.sh -u
+            #
+
+            /usr/bin/perl -pi -e "s/\Mac-00BE6ED71E35EB86/$MYBOARD/" IO80211Family.kext/Contents/PlugIns/AirPortBrcm4360.kext/Contents/MacOS/AirPortBrcm4360
+            /usr/bin/perl -pi -e "s/\Mac-00BE6ED71E35EB86/$MYBOARD/" IO80211Family.kext/Contents/PlugIns/AirPortBrcmNIC.kext/Contents/MacOS/AirPortBrcmNIC
+        
+            fixPerms IO80211Family.kext
+            popd > /dev/null
+
+        fi
+    fi
+    
+    if [ "x$INSTALL_WIFI" = "xNO" ]
+    then
+        pushd "$VOLUME/System/Library/Frameworks" > /dev/null
+        
+        # getting board-id of the system
+        MYBOARD=`/usr/sbin/ioreg -l | grep board-id | awk -F\" '{ print $4 }' | grep Mac`
+
+        # check if there exist a ContinuitySupport entry for this particular system
+        RESULT=`/usr/libexec/PlistBuddy -c "Print:$MYBOARD:ContinuitySupport" "IOBluetooth.framework/Versions/A/Resources/SystemParameters.plist"`
+
+        if [ "x$RESULT" = "xfalse" ]
+        then
+            echo 'patching IOBluetooth.framework for Continuity and HandOff for board-id ' $MYBOARD
+            
+            /usr/libexec/PlistBuddy -c "Set:$MYBOARD:ContinuitySupport true" "IOBluetooth.framework/Versions/A/Resources/SystemParameters.plist"
+            # read again and check
+            RESULT=`/usr/libexec/PlistBuddy -c "Print:$MYBOARD:ContinuitySupport" "IOBluetooth.framework/Versions/A/Resources/SystemParameters.plist"`
+            
+            echo 'Continuity for ' $MYBOARD 'set to: ' $RESULT
+        else
+            echo 'your system with board-id' $MYBOARD 'has no black list entry'
+            echo 'and will possibly support Continuity and HandOff out of the box.'
+        fi
+        fixPerms IOBluetooth.framework
+
         popd > /dev/null
     fi
+
+    
+    
 
     if [ "x$DISABLE_LIBRARY_VALIDATION" = "xYES" ]
     then
