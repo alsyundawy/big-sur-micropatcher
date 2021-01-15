@@ -547,8 +547,6 @@
 			<false/>
 			<key>PickerMode</key>
 			<string>External</string>
-			<key>PickerVariant</key>
-			<string>Auto</string>
 			<key>PollAppleHotKeys</key>
 			<false/>
 			<key>ShowPicker</key>
@@ -664,7 +662,7 @@
 				<key>run-efi-updater</key>
 				<string>No</string>
 				<key>csr-active-config</key>
-				<data>AAAAAA==</data>
+				<data>/w8AAA==</data>
 				<key>prev-lang:kbd</key>
 				<data></data>
 			</dict>
@@ -842,8 +840,6 @@
 			<integer>20</integer>
 			<key>PlayChime</key>
 			<string></string>
-			<key>SetupDelay</key>
-			<integer>0</integer>
 			<key>VolumeAmplifier</key>
 			<integer>0</integer>
 		</dict>
@@ -943,6 +939,8 @@
 		</dict>
 		<key>Quirks</key>
 		<dict>
+			<key>DeduplicateBootOrder</key>
+			<false/>
 			<key>ExitBootServicesDelay</key>
 			<integer>0</integer>
 			<key>IgnoreInvalidFlexRatio</key>

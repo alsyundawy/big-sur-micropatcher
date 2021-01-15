@@ -109,6 +109,9 @@ rm -f "$VOLUME"/bless*
 rm -f "$VOLUME"/patch.*
 # For v0.5.0 and later
 rm -rf "$VOLUME"/bin
+# For v0.5.1 and later (Ausdauersportler)
+rm -rf "$VOLUME"/Preferences
+rm -rf "$VOLUME"/PrivateFrameworks
 # For all versions
 rm -f "$VOLUME"/*.sh "$VOLUME/Patch-Version.txt"
 

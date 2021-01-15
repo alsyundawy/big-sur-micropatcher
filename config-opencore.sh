@@ -237,7 +237,7 @@ then
         echo "Original AMD HD 67x0 card found, device ID: " $DID
         GPU="ATI"
         ;;
-        0x68c1 0x68d8)
+        0x68c1 | 0x68d8)
         echo "Original AMD HD 5xx0 card found, device ID: " $DID
         GPU="ATI"
         ;;
@@ -248,6 +248,7 @@ then
         *)
         echo "Unknown GPU model. This may be a config-opencore bug, or the original Apple iMac ATI GPU has been detected"
         echo "which is not really usable with Big Sur and will run without any graphics acceleration, device ID: " $DID
+        GPU="ATI"
         ;;
     esac
     echo

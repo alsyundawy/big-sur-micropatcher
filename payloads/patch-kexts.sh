@@ -228,8 +228,9 @@ then
         ;;
     MacBookPro6,?)
         echo "This Mac has a 1st gen Intel Core CPU which cannot boot Big Sur."
-        echo "You need OpenCore 0.6.3 and the khronokernel DSDT patch to boot this machines!"
-        exit 1
+        echo "You need OpenCore and the khronokernel DSDT patch to boot this machines!"
+        # assuming this selection may fit
+        PATCHMODE=--2010
         ;;
     # Macs which are not supported by Apple but supported by this patcher.
     # This currently errs on the side of blindly assuming the Mac will work.
@@ -251,7 +252,7 @@ then
         ;;
     iMac11,?)
         echo "Detected a Late 2009 or Mid 2010 11,x iMac. Using special iMac 11,x patch mode."
-        echo "You need OpenCore 0.6.4 and the khronokernel DSDT patch to boot this machines!"
+        echo "You need OpenCore and the khronokernel DSDT patch to boot this machines!"
         # sleep 10
         PATCHMODE=--2011
         INSTALL_IMACMETAL="YES"
