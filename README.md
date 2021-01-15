@@ -4,9 +4,21 @@ A primitive USB patcher for installing macOS Big Sur on unsupported Macs
 By the way, if you have a Mac Pro, [Big Mac](https://github.com/StarPlayrX/bigmac) by StarPlayrX is another patcher worth considering. For 2008 Mac Pros (MacPro3,1) in particular, Big Mac is clearly a better option than this patcher (at least for now).
 
 This version has been forked of the current 0.5.1 version @Barry K. Nathan developed and published enhanced with all necessary patches to install Big Sur on iMac models as: iMac 27" Late 2009 (core i series CPU), iMac Mid 2010 (all systems), iMac Mid 2011 (all systems) if these iMacs have been upgraded with an metal GPU in advance. You may also install Big Sur on stock Apple iMac models listed above, but without graphics accerelation the usability will be near the absolute Zero. 
+
 Optionally you can now use a preconfigured opencore setup to enably boot and installation of Big Sur on iMac Late 2009 and Mid 2010 as well as on MacBookPro 6,x systems. Please note that no specific patches have been preconfigured with the MacBookPro 6,x series so far. 
 
 You may use this patcher as a 100% replacement to the current original. No features have been deleted. There are only enhancements.
+
+</br>
+
+## Important news before you install Big Sur!
+
+For some users, WiFi in Big Sur 11.0.1 is so unreliable that it is effectively unusable. This is happening on 802.11ac WiFi cards which are supported natively by Big Sur, as well as on Macs which are officially supported by Big Sur, so this is not due to a patcher bug. To be clear, WiFi does work well in Big Sur for many users. However, be prepared to use Ethernet or USB iPhone tethering if you upgrade to Big Sur. If WiFi **must** work on your Mac, then **do not upgrade to Big Sur at this time**.
+
+There is another WiFi issue (likely unrelated to any other Big Sur WiFi bugs) where connections to hidden SSIDs or iPhone hotspots fail. For iPhone hotspots, you can work around this bug by connecting using USB instead of WiFi for now. Bug reports so far point in the direction of this being a bug in the WiFi patch (and not Big Sur itself). I will try to address this issue in a future patcher release.
+
+</br>
+</br>
 
 Thanks to the following people for their hard work to get Big Sur running on unsupported Macs:
 
@@ -73,7 +85,9 @@ I *strongly recommend* that you create, and hold onto, an [installer USB for an 
 
 In any case, if you are unable to start Internet Recovery, or it has a version of Safari too old to visit GitHub.com, then it is *vital* that you create an installer USB for an older macOS version and hold onto it in case of emergency.
 
-Once you create the patched installer USB for Big Sur, hold onto it as well. If you ever reset your Mac's NVRAM, then you will need to use the patched installer USB to repeat step 9 of the installation instructions.
+Once you create the patched installer USB for Big Sur, hold onto it as well. If you ever reset your Mac's NVRAM, then you will need to use the patched installer USB to repeat step 9 of the installation instructions or boot from the opencore.
+
+Furthermore, booting into regular (vs. Internet) Recovery with Command-R with Big Sur currently does not work on unsupported Macs; the easy workaround is to boot from the patched installer USB instead.
 
 If you have installed any 3rd-party antivirus program or security suite, make sure to uninstall it before installing Big Sur (or do a fresh installation instead of an upgrade). It is not sufficient to turn the antivirus program off -- it must be uninstalled. If you do not uninstall it, you may have no Internet connection after Big Sur is installed, and the Wi-Fi patch may fail to work.
 
@@ -90,8 +104,8 @@ If you encounter "com.apple.DiskManagement.disenter error 49168" during installa
 ## Instructions for use
 
 1. Make sure you have a 16GB or larger USB stick to use for creating the installer.
-2. Obtain a copy of macOS Big Sur.
-3. Download a copy of this patcher. If you are viewing this on GitHub, and you probably are, then click the green "Code" button then "Download ZIP".
+2. Download a copy of this patcher. If you are viewing this on GitHub, and you probably are, then click the green "Code" button then "Download ZIP".
+3. Obtain a copy of macOS Big Sur: Use this link to download the [macOS Big Sur 11.1  (20C29) InstallAssistant.pkg](http://swcdn.apple.com/content/downloads/00/55/001-86606-A_9SF1TL01U7/5duug9lar1gypwunjfl96dza0upa854qgg/InstallAssistant.pkg). Once the download (approximately 11-12 GB) finishes, open and install InstallAssistant.pkg. This will place "Install macOS Big Sur", the actual Big Sur installer, in your Applications folder.
 4. Use Disk Utility to erase the USB stick using "Mac OS Extended (Journaled)" format and "GUID Partition Map" scheme. (You may need to choose "Show All Devices" before Disk Utility will allow you to do this.) In order for this patcher to run optimally, the USB stick must use GUID Partition Map and not Master Boot Record. (This is a new requirement as of micropatcher v0.2.0.) Note that the volume name does not particularly matter, since it will be renamed by `createinstallmedia` in the next step. (If this USB stick already contains a patched Big Sur installer created using micropatcher v0.2.0 or later, and you are re-creating it with a newer version of the micropatcher or a newer version of Big Sur, you may skip this step.) 
 5. Use [`createinstallmedia`](https://support.apple.com/en-us/HT201372) as usual to create a bootable USB stick with the installer and recovery environment, as you would on a supported Mac. (This patcher is easier to use if the installer USB stick is not renamed after `createinstallmedia` is used, but it can still work if the USB stick has been renamed.)
 6. Run `micropatcher.sh` to patch the USB stick. If micropatcher.sh is unable to find the USB stick, then try specifying the pathname of the USB stick to micropatcher.sh. The easiest way to do that is to open a Terminal window, drag and drop micropatcher.sh into the Terminal window, go back to Finder, choose Computer from the Go menu, drag and drop the USB stick into the Terminal window, then press Return.
