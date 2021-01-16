@@ -504,7 +504,7 @@
 	<dict>
 		<key>BlessOverride</key>
 		<array>
-			<string>/Volumes/Catalina\ Loader/EFI/BOOT/BOOTx64.efi</string>
+			<string>/Volumes/EFI/EFI/BOOT/BOOTx64.efi</string>
 		</array>
 		<key>Boot</key>
 		<dict>

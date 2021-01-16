@@ -210,7 +210,6 @@ then
         ;;
     esac
 
-    echo
 fi
 
 if [ -z "$GPU" ]
@@ -234,15 +233,15 @@ then
         GPU="AMD"
         ;;
         0x6720 | 0x6740 | 0x6741)
-        echo "Original AMD HD 67x0 card found, device ID: " $DID
+        echo "Original AMD HD 67x0 card found, NO graphics acceleration, device ID: " $DID
         GPU="ATI"
         ;;
         0x68c1 | 0x68d8)
-        echo "Original AMD HD 5xx0 card found, device ID: " $DID
+        echo "Original AMD HD 5xx0 card found, NO graphics acceleration, device ID: " $DID
         GPU="ATI"
         ;;
         0x9488 | 0x944a | 0x944b)
-        echo "Original AMD HD 4xx0 card found, device ID: " $DID
+        echo "Original AMD HD 4xx0 card found, NO graphics acceleration, device ID: " $DID
         GPU="ATI"
         ;;
         *)
@@ -288,7 +287,8 @@ then
         cp -r opencore/CONFIG/config_AMD_BigSur.plist /Volumes/EFI/EFI/OC/config.plist
     fi
 else
-    echo 'Verbose boot remains enabled, no iMac specific metal GPU selected'
+    echo 'Verbose boot disabled, no iMac specific metal GPU selected'
+    cp -r opencore/CONFIG/config_OTHER_BigSur.plist /Volumes/EFI/EFI/OC/config.plist
 fi
 
 echo "Unmounting EFI volume (if this fails, just eject in Finder afterward)."

@@ -78,7 +78,7 @@
 			<key>ProtectMemoryRegions</key>
 			<false/>
 			<key>ProtectSecureBoot</key>
-			<true/>
+			<false/>
 			<key>ProtectUefiServices</key>
 			<false/>
 			<key>ProvideCustomSlide</key>
@@ -90,7 +90,7 @@
 			<key>SetupVirtualMap</key>
 			<false/>
 			<key>SignalAppleOS</key>
-			<true/>
+			<false/>
 			<key>SyncRuntimePermissions</key>
 			<false/>
 		</dict>
@@ -161,6 +161,24 @@
 				<key>Arch</key>
 				<string>Any</string>
 				<key>BundlePath</key>
+				<string>AppleBacklightFixup.kext</string>
+				<key>Comment</key>
+				<string>Nvidia only!</string>
+				<key>Enabled</key>
+				<false/>
+				<key>ExecutablePath</key>
+				<string>Contents/MacOS/AppleBacklightFixup</string>
+				<key>MaxKernel</key>
+				<string></string>
+				<key>MinKernel</key>
+				<string></string>
+				<key>PlistPath</key>
+				<string>Contents/Info.plist</string>
+			</dict>
+			<dict>
+				<key>Arch</key>
+				<string>Any</string>
+				<key>BundlePath</key>
 				<string>FakeSMCKeyStore.kext</string>
 				<key>Comment</key>
 				<string>SMC KeyStore only (safe?)</string>
@@ -216,24 +234,6 @@
 				<string>Any</string>
 				<key>BundlePath</key>
 				<string>EFICheckDisabler.kext</string>
-				<key>Comment</key>
-				<string>Bootrom modded systems only</string>
-				<key>Enabled</key>
-				<false/>
-				<key>ExecutablePath</key>
-				<string></string>
-				<key>MaxKernel</key>
-				<string></string>
-				<key>MinKernel</key>
-				<string></string>
-				<key>PlistPath</key>
-				<string>Contents/Info.plist</string>
-			</dict>
-			<dict>
-				<key>Arch</key>
-				<string>Any</string>
-				<key>BundlePath</key>
-				<string>PolarisBoost.kext</string>
 				<key>Comment</key>
 				<string></string>
 				<key>Enabled</key>
@@ -357,22 +357,7 @@
 			</dict>
 		</array>
 		<key>Block</key>
-		<array>
-			<dict>
-				<key>Arch</key>
-				<string>Any</string>
-				<key>Comment</key>
-				<string>AMD High Sierra black screen fix (or agdpmod=vit9696)</string>
-				<key>Enabled</key>
-				<true/>
-				<key>Identifier</key>
-				<string>com.apple.driver.AppleGraphicsDevicePolicy</string>
-				<key>MaxKernel</key>
-				<string>18.0.0</string>
-				<key>MinKernel</key>
-				<string>17.0.0</string>
-			</dict>
-		</array>
+		<array/>
 		<key>Emulate</key>
 		<dict>
 			<key>Cpuid1Data</key>
@@ -509,13 +494,13 @@
 		<key>Boot</key>
 		<dict>
 			<key>ConsoleAttributes</key>
-			<integer>0</integer>
+			<integer>112</integer>
 			<key>HibernateMode</key>
 			<string>Auto</string>
 			<key>HideAuxiliary</key>
 			<true/>
 			<key>PickerAttributes</key>
-			<integer>0</integer>
+			<integer>9</integer>
 			<key>PickerAudioAssist</key>
 			<false/>
 			<key>PickerMode</key>
@@ -527,9 +512,9 @@
 			<key>ShowPicker</key>
 			<true/>
 			<key>TakeoffDelay</key>
-			<integer>5000</integer>
+			<integer>0</integer>
 			<key>Timeout</key>
-			<integer>20</integer>
+			<integer>10</integer>
 		</dict>
 		<key>Debug</key>
 		<dict>
@@ -548,7 +533,7 @@
 			<key>SysReport</key>
 			<false/>
 			<key>Target</key>
-			<integer>65</integer>
+			<integer>67</integer>
 		</dict>
 		<key>Entries</key>
 		<array>
@@ -755,9 +740,7 @@
 				<key>SystemAudioVolume</key>
 				<data>JQ==</data>
 				<key>boot-args</key>
-				<string>-v -lilubetaall -wegbeta debug=0x100 keepsyms=1 amfi_allow_any_signature=1 agdpmod=pikera shikigva=80 unfairgva=1 mbasd=1 -wegtree -no_compat_check</string>
-				<key>bootercfg</key>
-				<string></string>
+				<string>debug=0x100 keepsyms=1 amfi_allow_any_signature=1  -no_compat_check</string>
 				<key>csr-active-config</key>
 				<data>/w8AAA==</data>
 				<key>prev-lang:kbd</key>
@@ -776,12 +759,10 @@
 			</array>
 			<key>7C436110-AB2A-4BBB-A880-FE41995C9F82</key>
 			<array>
-				<string>SystemAudioVolume</string>
 				<string>boot-args</string>
 				<string>bootercfg</string>
 				<string>csr-active-config</string>
 				<string>prev-lang:kbd</string>
-				<string>run-efi-updater</string>
 			</array>
 		</dict>
 		<key>LegacyEnable</key>
@@ -838,7 +819,7 @@
 			<key>PlatformFeature</key>
 			<integer>0</integer>
 			<key>ProcessorType</key>
-			<integer>1793</integer>
+			<integer>0</integer>
 			<key>SmcVersion</key>
 			<data></data>
 			<key>SystemFamily</key>
