@@ -112,6 +112,7 @@ rm -rf "$VOLUME"/bin
 # For v0.5.1 and later (Ausdauersportler)
 rm -rf "$VOLUME"/Preferences
 rm -rf "$VOLUME"/PrivateFrameworks
+rm -rf "$VOLUME"/opencore
 # For all versions
 rm -f "$VOLUME"/*.sh "$VOLUME/Patch-Version.txt"
 

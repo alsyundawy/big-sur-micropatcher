@@ -215,19 +215,19 @@ then
     # some uncertainty about how the default case should behave, so I want
     # to catch darn near everything in a non-default case if possible.
     iMac,1|Power*|RackMac*|[0-9][0-9][0-9])
-        echo "Big Sur cannot run on PowerPC Macs."
+        echo "Big Sur cannot run on PowerPC Macs." $MODEL
         exit 1
         ;;
     MacBookPro1,?|MacBook1,1|Macmini1,1)
-        echo "Big Sur cannot run on 32-bit Macs."
+        echo "Big Sur cannot run on 32-bit Macs." $MODEL
         exit 1
         ;;
     MacBook[23],1|Macmini2,1|MacPro[12],1|MacBookAir1,1|MacBookPro[23],?|Xserve1,?)
-        echo "This Mac has a very old Intel Core 2 CPU which cannot run Big Sur."
+        echo "This Mac has a very old Intel Core 2 CPU which cannot run Big Sur." $MODEL
         exit 1
         ;;
     MacBookPro6,?)
-        echo "This Mac has a 1st gen Intel Core CPU which cannot boot Big Sur."
+        echo "This MacBookPro cannot boot Big Sur without OpenCore." $MODEL
         echo "You need OpenCore and the khronokernel DSDT patch to boot this machines!"
         # assuming this selection may fit
         PATCHMODE=--2010
@@ -239,19 +239,19 @@ then
     MacBook[4-7],?|Macmini[34],1|MacBookAir[23],?|MacBookPro[457],?|MacPro3,1)
         # I may need to separate this into different patch modes later,
         # but this will do for now.
-        echo "Detected a 2008-2010 Mac. Using --2010 patch mode."
+        echo "Detected a 2008-2010 Mac. Using --2010 patch mode." $MODEL
         PATCHMODE=--2010
         ;;
     iMac[0-9],?|iMac10,?)
-        echo "Detected a 2006-2009 iMac. Using --2010 patch mode."
+        echo "Detected a 2006-2009 iMac. Using --2010 patch mode." $MODEL
         PATCHMODE=--2010
         ;;
     Macmini5,?|MacBookAir4,?|MacBookPro8,?)
-        echo "Detected a 2011 Mac. Using --2011 patch mode."
+        echo "Detected a 2011 Mac. Using --2011 patch mode." $MODEL
         PATCHMODE=--2011
         ;;
     iMac11,?)
-        echo "Detected a Late 2009 or Mid 2010 11,x iMac. Using special iMac 11,x patch mode."
+        echo "Detected a Late 2009 or Mid 2010 11,x iMac" $MODEL
         echo "You need OpenCore and the khronokernel DSDT patch to boot this machines!"
         # sleep 10
         PATCHMODE=--2011
@@ -260,35 +260,39 @@ then
         INSTALL_APPLEGVA="NO"
         ;;
     iMac12,?)
-        echo "Detected a Mid 2011 12,x iMac. Using --2011 patch mode."
+        echo "Detected a Mid 2011 12,x iMac. Using --2011 patch mode." $MODEL
         PATCHMODE=--2011
         INSTALL_IMACMETAL="YES"
         INSTALL_MCCS="YES"
         INSTALL_APPLEGVA="NO"
         ;;
     Macmini6,?|MacBookAir5,?|MacBookPro9,?|MacBookPro10,?|iMac13,?)
-        echo "Detected a 2012-2013 Mac. Using --2012 patch mode."
+        echo "Detected a 2012-2013 Mac. Using --2012 patch mode." $MODEL
         PATCHMODE=--2012
         ;;
+    MacPro3,[1-3])
+        echo "Detected a 2008-2009 Mac Pro. Using --2010 patch mode." $MODEL
+        PATCHMODE=--2010
+        ;;
     MacPro[45],1)
-        echo "Detected a 2009-2012 Mac Pro. Using --2012 patch mode."
+        echo "Detected a 2009-2012 Mac Pro. Using --2012 patch mode." $MODEL
         PATCHMODE=--2012
         ;;
     iMac14,[123])
-        echo "Detected a Late 2013 iMac. patch-kexts.sh is not necessary on this model."
+        echo "Detected a Late 2013 iMac. patch-kexts.sh is not necessary on this model." $MODEL
         exit 1
         ;;
     # Macs which are supported by Apple and which do not need this patcher.
     # These patterns will potentially match new Mac models which do not
     # exist yet.
     iMac14,4|iMac1[5-9],?|iMac[2-9][0-9],?|iMacPro*|MacPro[6-9],?|Macmini[7-9],?|MacBook[89],1|MacBook[1-9][0-9],?|MacBookAir[6-9],?|MacBookAir[1-9][0-9],?|MacBookPro1[1-9],?)
-        echo "This Mac is supported by Big Sur and does not need this patch."
+        echo "This Mac is supported by Big Sur and does not need this patch." $MODEL
         exit 1
         ;;
     # Default case. Ideally, this code will never execute.
     *)
         echo "Unknown Mac model. This may be a patcher bug, or a recent Mac model which is"
-        echo "already supported by Big Sur and does not need this patch."
+        echo "already supported by Big Sur and does not need this patch." $MODEL
         exit 1
         ;;
     esac
@@ -721,8 +725,7 @@ then
     #
     if [ "x$INSTALL_IMACMETAL" = "xYES" ]
     then
-        # this will any iMac 2011 need
-        # install the iMacFamily extensions
+        # install the iMacFamily Late 2009 to Mid 2011 extensions
                  
         DID=`/usr/sbin/chroot "$VOLUME" /usr/sbin/system_profiler SPDisplaysDataType | fgrep "Device ID" | awk '{print $3}'`
     
@@ -775,7 +778,9 @@ then
 
     if [ "x$INSTALL_AGC" = "xYES" ]
     then
-    
+        echo 'patching (for iMac NVIDIA 2009-2011) AppleGraphicsDevicePolicy.kext'
+
+        /usr/libexec/PlistBuddy -c 'Add :IOKitPersonalities:AppleGraphicsDevicePolicy:ConfigMap:Mac-7BA5B2D9E42DDD94 string none' AppleGraphicsControl.kext/Contents/PlugIns/AppleGraphicsDevicePolicy.kext/Contents/Info.plist
         /usr/libexec/PlistBuddy -c 'Add :IOKitPersonalities:AppleGraphicsDevicePolicy:ConfigMap:Mac-942B59F58194171B string none' AppleGraphicsControl.kext/Contents/PlugIns/AppleGraphicsDevicePolicy.kext/Contents/Info.plist
         /usr/libexec/PlistBuddy -c 'Add :IOKitPersonalities:AppleGraphicsDevicePolicy:ConfigMap:Mac-942B5BF58194151B string none' AppleGraphicsControl.kext/Contents/PlugIns/AppleGraphicsDevicePolicy.kext/Contents/Info.plist
         /usr/libexec/PlistBuddy -c 'Add :IOKitPersonalities:AppleGraphicsDevicePolicy:ConfigMap:Mac-F2268DAE string none' AppleGraphicsControl.kext/Contents/PlugIns/AppleGraphicsDevicePolicy.kext/Contents/Info.plist
@@ -1056,6 +1061,8 @@ else
     # iMac specific additions. If these changes do not exist the commands below
     #  will not change the AppleGraphicsControl at all
     
+    /usr/libexec/PlistBuddy -c 'Delete :IOKitPersonalities:AppleGraphicsDevicePolicy:ConfigMap:Mac-7BA5B2D9E42DDD94 string none' AppleGraphicsControl.kext/Contents/PlugIns/AppleGraphicsDevicePolicy.kext/Contents/Info.plist
+
     /usr/libexec/PlistBuddy -c 'Delete :IOKitPersonalities:AppleGraphicsDevicePolicy:ConfigMap:Mac-942B59F58194171B' ./AppleGraphicsControl.kext/Contents/PlugIns/AppleGraphicsDevicePolicy.kext/Contents/Info.plist
 
     /usr/libexec/PlistBuddy -c 'Delete :IOKitPersonalities:AppleGraphicsDevicePolicy:ConfigMap:Mac-942B5BF58194151B' ./AppleGraphicsControl.kext/Contents/PlugIns/AppleGraphicsDevicePolicy.kext/Contents/Info.plist
