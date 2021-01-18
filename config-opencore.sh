@@ -28,6 +28,8 @@ fi
 # For this script, root permissions are vital.
 [ $UID = 0 ] || exec sudo "$0" "$@"
 
+
+ROOT=/
 while [[ $1 = -* ]]
 do
     case $1 in
@@ -40,6 +42,11 @@ do
         ;;
     -NV | --kepler*)
         GPU="NV"
+        ;;
+    --volume)
+        shift
+        ROOT=$1
+        echo "Big Sur Volume Root :" $ROOT
         ;;
     *)
         echo "Unknown command line option: $1"
@@ -116,7 +123,8 @@ fi
 # check on Catalina or higher. (I can add an "else" block later to handle
 # Mojave and earlier, but Catalina is responsible for every single bug
 # report I've received due to this script lacking necessary read permissions.)
-if [ `uname -r | sed -e 's@\..*@@'` -ge 19 ]
+RELEASE=`/usr/sbin/chroot "$ROOT" uname -r | sed -e 's@\..*@@'`
+if [ $RELEASE -ge 19 ]
 then
     echo 'Checking read access to necessary directories...'
     if ! checkDirAccess
@@ -214,7 +222,7 @@ fi
 
 if [ -z "$GPU" ]
 then
-    DID=`/usr/sbin/system_profiler SPDisplaysDataType | fgrep "Device ID" | awk '{print $3}'`
+    DID=`/usr/sbin/chroot "$ROOT" /usr/sbin/system_profiler SPDisplaysDataType | fgrep "Device ID" | awk '{print $3}'`
 
     case $DID in
         # OpenCore: K610M, K1100M, K2100M

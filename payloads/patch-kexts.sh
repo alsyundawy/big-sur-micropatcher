@@ -732,11 +732,9 @@ then
         case $DID in
             # OpenCore: K610M, K1100M, K2100M
             0x12b9 | 0x0ff6 | 0x11fc)
-            INSTALL_BACKLIGHT="YES"
-            INSTALL_AGC="YES"
-            # INSTALL_APPLEGVA="YES"
             echo "NVIDIA K610M, K1100M, K2100M found, assume use of OC, device ID: " $DID
-            ;;
+            INSTALL_BACKLIGHT="YES"
+            INSTALL_AGC="YES"            ;;
             # OpenCore; AMD Baffin cards
             0x67e8 | 0x67e0 | 0x67c0 | 0x67df | 0x67ef)
             echo "AMD Polaris WX4130/WX4150/WX4170/WX7100/RX480 found, assume use of OC, device ID: " $DID
@@ -745,12 +743,11 @@ then
             ;;
             # OpenCore: NVIDIA ++ cards
             0x1198 | 0x1199 | 0x119A | 0x119f | 0x119e |0x119d |0x11e0 | 0x11e1 | 0x11b8 | 0x11b7 | 0x11b6 | 0x11bc | 0x11bd | 0x11be |0x0ffb | 0x0ffc)
-            echo "NVIDIA Kepler Kx100M, Kx000M, GTX8xx, GTX7xx Card found, assume no use of OC, device ID: " $DID
+            echo "NVIDIA Kepler Kx100M, Kx000M, GTX8xx, GTX7xx Card found, assume now use of OC, device ID: " $DID
             INSTALL_BACKLIGHT="YES"
             INSTALL_BACKLIGHTFIXUP="YES"
             INSTALL_VIT9696="NO"
             INSTALL_AGC="YES"
-            # INSTALL_APPLEGVA="YES"
             ;;
             0x6720 | 0x6740 | 0x6741)
             echo "Original AMD HD 67x0 card found, device ID: " $DID
@@ -778,7 +775,7 @@ then
 
     if [ "x$INSTALL_AGC" = "xYES" ]
     then
-        echo 'patching (for iMac NVIDIA 2009-2011) AppleGraphicsDevicePolicy.kext'
+        echo 'Patching (for iMac NVIDIA 2009-2011) AppleGraphicsDevicePolicy.kext'
 
         /usr/libexec/PlistBuddy -c 'Add :IOKitPersonalities:AppleGraphicsDevicePolicy:ConfigMap:Mac-7BA5B2D9E42DDD94 string none' AppleGraphicsControl.kext/Contents/PlugIns/AppleGraphicsDevicePolicy.kext/Contents/Info.plist
         /usr/libexec/PlistBuddy -c 'Add :IOKitPersonalities:AppleGraphicsDevicePolicy:ConfigMap:Mac-942B59F58194171B string none' AppleGraphicsControl.kext/Contents/PlugIns/AppleGraphicsDevicePolicy.kext/Contents/Info.plist
