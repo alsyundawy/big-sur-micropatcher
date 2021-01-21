@@ -11,6 +11,8 @@ Using the command line option `patch-kexts.sh --ns` you can enable Night Shift o
 Using the command line option `patch-kexts.sh --whitelist` you can enable HandOff and Continiuty with BCM94331CD cards.
 Using the command line option `patch-kexts.sh --saveboot` modifies the SystemPlatform.plist to include most compatible systems supported here iMac 2009, iMac 2010, all 2011-2013 Macs. 
 
+Deprecated: Forcing iMac12,x Mid 2011 models to run without OpenCore users may use this option  `patch-kexts.sh --nikey22`
+
 You may use this patcher as a 100% replacement to the current original. No features have been deleted. There are only enhancements. 
 
 This package has also been successfully tested with the [MicropatcherAutomator](https://github.com/moosethegoose2213/automator-for-barrykn-micropatcher), although currently only by manual patching of this program. Integration scripts have been added to this release in the folder Automator. I hope a future release of the MicropatcherAutomator will include my fork. Patching needs replacement of the micropatcher and those two scripts within the current app and then resiging it by `codesign -s your-certificate -fv MicropatcherAutomator.app`  using a [self created developer certificate](https://support.apple.com/guide/keychain-access/create-self-signed-certificates-kyca8916/mac). 

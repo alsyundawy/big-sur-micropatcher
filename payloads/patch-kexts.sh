@@ -145,6 +145,10 @@ do
         echo "Experimental: selected model iMac11,x"
         MODEL="iMac11,1"
         ;;
+    --nikey22)
+        echo "Deprecated: run without OC on iMac12,x"
+        INSTALL_NIKEY22="YES"
+        ;;
     --force)
         FORCE=YES
         ;;
@@ -726,14 +730,18 @@ then
         fixPerms AppleIntelHD3000GraphicsVADriver.bundle
         fixPerms AppleIntelSNBVA.bundle
         
-        echo "Using iMacPro1,1 enabled version of AppleIntelSNBGraphicsFB.kext"
-        echo "WhateverGreen and Lilu need to be injected by OpenCore"
-        rm -rf AppleIntelSNBGraphicsFB.kext
-        unzip -q "$IMGVOL/kexts/AppleIntelSNBGraphicsFB-AMD.kext.zip"
-        # rename AppleIntelSNBGraphicsFB-AMD.kext
-        mv AppleIntelSNBGraphicsFB-AMD.kext AppleIntelSNBGraphicsFB.kext
-        fixPerms AppleIntelSNBGraphicsFB.kext
-
+        if [ "x$INSTALL_NIKEY22" = "xYES" ]
+        then
+            echo "Using iMac12,x enabled version of AppleIntelSNBGraphicsFB.kext"
+        else
+            echo "Using iMacPro1,1 enabled version of AppleIntelSNBGraphicsFB.kext"
+            echo "WhateverGreen and Lilu need to be injected by OpenCore"
+            rm -rf AppleIntelSNBGraphicsFB.kext
+            unzip -q "$IMGVOL/kexts/AppleIntelSNBGraphicsFB-AMD.kext.zip"
+            # rename AppleIntelSNBGraphicsFB-AMD.kext
+            mv AppleIntelSNBGraphicsFB-AMD.kext AppleIntelSNBGraphicsFB.kext
+            fixPerms AppleIntelSNBGraphicsFB.kext
+        fi
     fi
 
     #
