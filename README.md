@@ -7,8 +7,10 @@ This version has been forked of the current 0.5.1 version @Barry K. Nathan devel
 
 Optionally you can now use a preconfigured opencore setup to enably boot and installation of Big Sur on iMac Late 2009 and Mid 2010 as well as on MacBookPro 6,x systems. Please note that no specific patches have been preconfigured with the MacBookPro 6,x series so far. 
 
-Using the command line option `patch-kexts.sh --ns` you can enable Night Shift on possibly all machines. This has been included to all 2011 models and iMac Late 2009 and Mid 2010. Since 2012 and 2013 are currenly not patched at all unless the WiFi cards needs it one has to decide: So I want a clean system with full Apple filesystem integrity checks or some nice to see feature. You cannot force Night Shift to be enabled in systems not modified at all - the patcher exits currently in those cases gracefully since no patch is really needed.
+Using the command line option `patch-kexts.sh --ns` you can enable Night Shift on nearly all machines. This option has now been included to all systems and to patchmode 2010 and 2011. Exception: Since some 2012 and 2013 are currenly not patched at all unless the WiFi cards needs a patch one has to decide: Do I want a clean system with full Apple filesystem integrity checks or do I need this nice to see feature. You cannot force Night Shift to be enabled in systems not modified at all - the patcher exits currently in those cases gracefully.
+
 Using the command line option `patch-kexts.sh --whitelist` you can enable HandOff and Continiuty with BCM94331CD cards.
+
 Using the command line option `patch-kexts.sh --saveboot` modifies the SystemPlatform.plist to include most compatible systems supported here iMac 2009, iMac 2010, all 2011-2013 Macs. 
 
 Deprecated: Forcing iMac12,x Mid 2011 models to run without OpenCore users may use this option  `patch-kexts.sh --nikey22`
