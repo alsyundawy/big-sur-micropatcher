@@ -26,9 +26,6 @@ if [ -d "/Volumes/Image Volume" ]; then
 fi
 echo "$INSTALLER"
 
-#
-#thank you Ben for introducing me to this!
-
 # only case no included in the patch-kext.sh
 case $MODEL in
 #        MacPro3,[1-3])

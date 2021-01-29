@@ -47,21 +47,33 @@
 			<key>ApplePanels</key>
 			<dict>
 				<key>F10Ta00c</key>
-				<data>ABEAGAA3AF8AigCzAOsBJAFnAakB1AIJAlQCogL4A00D</data>
+				<data>
+				ABEAGAA3AF8AigCzAOsBJAFnAakB1AIJAlQCogL4A00D
+				</data>
 				<key>F10T9cd7</key>
-				<data>ABEAGAA3AF8AigCzAOsBJAFnAakB1AIJAlQCogL4A00D</data>
+				<data>
+				ABEAGAA3AF8AigCzAOsBJAFnAakB1AIJAlQCogL4A00D
+				</data>
 				<key>F10T921e</key>
-				<data>ABEAGAA3AF8AigCzAOsBJAFnAakB1AIJAlQCogL4A00D</data>
+				<data>
+				ABEAGAA3AF8AigCzAOsBJAFnAakB1AIJAlQCogL4A00D
+				</data>
 				<key>F10T9cdd</key>
-				<data>ABEAGAA3AF8AigCzAOsBJAFnAakB1AIJAlQCogL4A00D</data>
+				<data>
+				ABEAGAA3AF8AigCzAOsBJAFnAakB1AIJAlQCogL4A00D
+				</data>
 				<key>F10Ta007</key>
-				<data>ABEAGAA3AF8AigCzAOsBJAFnAakB1AIJAlQCogL4A00D</data>
+				<data>
+				ABEAGAA3AF8AigCzAOsBJAFnAakB1AIJAlQCogL4A00D
+				</data>
 				<key>F10T9cb5</key>
-				<data>ABEAGAA3AF8AigCzAOsBJAFnAakB1AIJAlQCogL4A00D</data>
-				<key>F10T9cde</key>
-				<data>ABEAGAA3AF8AigCzAOsBJAFnAakB1AIJAlQCogL4A00D</data>
+				<data>
+				ABEAGAA3AF8AigCzAOsBJAFnAakB1AIJAlQCogL4A00D
+				</data>
 				<key>F10Txxxx</key>
-				<data>ABEAGAA3AF8AigCzAOsBJAFnAakB1AIJAlQCogL4A00D</data>
+				<data>
+				ABEAGAA3AF8AigCzAOsBJAFnAakB1AIJAlQCogL4A00D
+				</data>
 			</dict>
 			<key>CFBundleIdentifier</key>
 			<string>com.apple.driver.AppleBacklight</string>

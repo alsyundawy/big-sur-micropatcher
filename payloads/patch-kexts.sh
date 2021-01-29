@@ -643,6 +643,20 @@ then
         unzip -q "$IMGVOL/kexts/AppleIntelHD3000GraphicsGLDriver.bundle-17G14033.zip"
         unzip -q "$IMGVOL/kexts/AppleIntelSNBGraphicsFB.kext-17G14033.zip"
         fixPerms AppleIntelHD3000* AppleIntelSNB*
+        
+        #
+        # complete the HD3000 installation for all systems
+        # prepared for feedback of 2011 MacBookPro users.
+        #
+        
+#        echo "Installing highvoltage12v patches for iMac 2011 family"
+#        echo "Using SNB and HD3000 VA bundle files"
+
+#        unzip -q "$IMGVOL/kexts/AppleIntelHD3000GraphicsVADriver.bundle-17G14033.zip"
+#        unzip -q "$IMGVOL/kexts/AppleIntelSNBVA.bundle-17G14033.zip"
+        
+#        fixPerms AppleIntelHD3000GraphicsVADriver.bundle
+#        fixPerms AppleIntelSNBVA.bundle
     fi
 
     if [ "x$INSTALL_LEGACY_USB" = "xYES" ]
