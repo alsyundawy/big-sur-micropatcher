@@ -122,7 +122,8 @@ do
     --agc)
         echo "Experimental: Patch AppleGraphicsControl.kext to avoid black screen (NVIDIA GPU only)"
         INSTALL_MYAGC="YES"
-        ;;
+        git DISABLE_LIBRARY_VALIDATION="YES"
+      ;;
     --saveboot)
         echo "Experimental: Enable save boot for Metal enabled Macs 2009-2013"
         ENABLE_SAVE_BOOT="YES"
@@ -1148,7 +1149,7 @@ else
         
     /usr/libexec/PlistBuddy -c "Delete :IOKitPersonalities:AppleGraphicsDevicePolicy:ConfigMap:$MYBOARD string none" AppleGraphicsControl.kext/Contents/PlugIns/AppleGraphicsDevicePolicy.kext/Contents/Info.plist
     
-    /usr/libexec/PlistBuddy -c 'Delete :IOKitPersonalities:AppleGraphicsDevicePolicy:ConfigMap:Mac-7BA5B2D9E42DDD94 string none' AppleGraphicsControl.kext/Contents/PlugIns/AppleGraphicsDevicePolicy.kext/Contents/Info.plist
+    /usr/libexec/PlistBuddy -c 'Delete :IOKitPersonalities:AppleGraphicsDevicePolicy:ConfigMap:Mac-7BA5B2D9E42DDD94' AppleGraphicsControl.kext/Contents/PlugIns/AppleGraphicsDevicePolicy.kext/Contents/Info.plist
 
     /usr/libexec/PlistBuddy -c 'Delete :IOKitPersonalities:AppleGraphicsDevicePolicy:ConfigMap:Mac-942B59F58194171B' ./AppleGraphicsControl.kext/Contents/PlugIns/AppleGraphicsDevicePolicy.kext/Contents/Info.plist
 
