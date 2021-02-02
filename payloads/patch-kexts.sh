@@ -122,7 +122,7 @@ do
     --agc)
         echo "Experimental: Patch AppleGraphicsControl.kext to avoid black screen (NVIDIA GPU only)"
         INSTALL_MYAGC="YES"
-        git DISABLE_LIBRARY_VALIDATION="YES"
+        DISABLE_LIBRARY_VALIDATION="YES"
       ;;
     --saveboot)
         echo "Experimental: Enable save boot for Metal enabled Macs 2009-2013"
@@ -900,6 +900,7 @@ then
     
     #
     # extended whitelist patching for BCM94331CD (this is no 802.11ac card)
+    # Mac-00BE6ED71E35EB86 is the iMac13,1 possibly one should use an ID of a still supported system!
     #
     if [ "x$INSTALL_WHITELIST" = "xYES" ]
     then
