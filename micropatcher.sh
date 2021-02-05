@@ -1,6 +1,6 @@
 #!/bin/bash
-VERSIONNUM=dev-v0.5.3
-VERSION="BarryKN Big Sur Micropatcher v$VERSIONNUM"
+VERSIONNUM=dev-v0.5.4
+VERSION="BarryKN/Ausdauersportler Big Sur Micropatcher v$VERSIONNUM"
 
 ### begin function definitions ###
 

@@ -231,7 +231,7 @@ then
         GPU="NV"
         ;;
         # NVIDIA (can run witout OpenCore)
-        0x1198 | 0x1199 | 0x119A | 0x119f | 0x119e |0x119d |0x11e0 | 0x11e1 | 0x11b8 | 0x11b7 | 0x11b6 | 0x11bc | 0x11bd | 0x11be |0x0ffb | 0x0ffc)
+        0x1198 | 0x1199 | 0x119a | 0x119f | 0x119e |0x119d |0x11e0 | 0x11e1 | 0x11b8 | 0x11b7 | 0x11b6 | 0x11bc | 0x11bd | 0x11be |0x0ffb | 0x0ffc)
         echo "NVIDIA Kepler Kx100M, Kx000M, GTX8xx, GTX7xx Card found, assume no use of OC, device ID: " $DID
         GPU="NV"
         ;;
@@ -279,24 +279,24 @@ then
     if [ "x$VERBOSEBOOT" = "xYES" ]
     then
         echo 'Verbose boot enabled, NVIDIA GPU selected'
-        cp -r opencore/CONFIG/config_NVIDIA_BigSur_verbose.plist /Volumes/EFI/EFI/OC/config.plist
+        cp -f opencore/CONFIG/config_NVIDIA_BigSur_verbose.plist /Volumes/EFI/EFI/OC/config.plist
     else
         echo 'Verbose boot disabled, NVIDIA GPU selected'
-        cp -r opencore/CONFIG/config_NVIDIA_BigSur.plist /Volumes/EFI/EFI/OC/config.plist
+        cp -f opencore/CONFIG/config_NVIDIA_BigSur.plist /Volumes/EFI/EFI/OC/config.plist
     fi
 elif [ "x$GPU" = "xAMD" ]
 then
     if [ "x$VERBOSEBOOT" = "xYES" ]
     then
         echo 'Verbose boot enabled, AMD GPU selected'
-        cp -r opencore/CONFIG/config_AMD_BigSur_verbose.plist /Volumes/EFI/EFI/OC/config.plist
+        cp -f opencore/CONFIG/config_AMD_BigSur_verbose.plist /Volumes/EFI/EFI/OC/config.plist
     else
         echo 'Verbose boot disabled, AMD GPU selected'
-        cp -r opencore/CONFIG/config_AMD_BigSur.plist /Volumes/EFI/EFI/OC/config.plist
+        cp -f opencore/CONFIG/config_AMD_BigSur.plist /Volumes/EFI/EFI/OC/config.plist
     fi
 else
     echo 'Verbose boot disabled, no iMac specific metal GPU selected'
-    cp -r opencore/CONFIG/config_OTHER_BigSur.plist /Volumes/EFI/EFI/OC/config.plist
+    cp -f opencore/CONFIG/config_OTHER_BigSur.plist /Volumes/EFI/EFI/OC/config.plist
 fi
 
 echo "Unmounting EFI volume (if this fails, just eject in Finder afterward)."

@@ -4,7 +4,8 @@
 #
 #
 #  Created by Nathan Taylor on 11/26/20.
-#  Edited by Ausdauersportler on 01/14/21.
+#  Edited by Ausdauersportler on 01/21/21
+#  added compability with micropatcher dev-v0.5.4 and later
 #
 #Drives
 VOLUME=$1
@@ -25,16 +26,13 @@ if [ -d "/Volumes/Image Volume" ]; then
 fi
 echo "$INSTALLER"
 
-#
-#thank you Ben for introducing me to this!
-
 # only case no included in the patch-kext.sh
 case $MODEL in
-        MacPro3,[1-3])
-        PATCHMODE=--2010
-        ;;
+#        MacPro3,[1-3])
+#        PATCHMODE=--2010
+#        ;;
         iMac11,[1-3] | iMac12,[1-2])
-        PATCHMODE=--ns
+#        PATCHMODE=--ns
         OPENCORE=YES
         ;;
         MacBookPro6,?)

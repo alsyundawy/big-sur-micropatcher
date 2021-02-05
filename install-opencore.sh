@@ -189,6 +189,10 @@ echo "Installing opencore EFI utility."
 
 cp -r opencore/EFI /Volumes/EFI
 
+echo "Installing Big Sur Installation config.plist."
+
+cp -f opencore/CONFIG/config_INSTALL_BigSur.plist /Volumes/EFI/EFI/OC/config.plist
+
 echo "Unmounting EFI volume (if this fails, just eject in Finder afterward)."
 umount /Volumes/EFI || diskutil unmount /Volumes/EFI
 

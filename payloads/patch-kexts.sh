@@ -119,6 +119,15 @@ do
         echo "Experimental: Whitelist entry for Continuity and HandOff"
         INSTALL_WHITELIST="YES"
         ;;
+    --agc)
+        echo "Experimental: Patch AppleGraphicsControl.kext to avoid black screen (NVIDIA GPU only)"
+        INSTALL_MYAGC="YES"
+        DISABLE_LIBRARY_VALIDATION="YES"
+      ;;
+    --saveboot)
+        echo "Experimental: Enable save boot for Metal enabled Macs 2009-2013"
+        ENABLE_SAVE_BOOT="YES"
+        ;;
     --ns)
         echo "Experimental: Using @jackluke patched CoreBrightness.framework to enable Night Shift"
         INSTALL_NIGHTSHIFT="YES"
@@ -136,6 +145,10 @@ do
     --model=iMac11)
         echo "Experimental: selected model iMac11,x"
         MODEL="iMac11,1"
+        ;;
+    --nikey22)
+        echo "Deprecated: run without OC on iMac12,x"
+        INSTALL_NIKEY22="YES"
         ;;
     --force)
         FORCE=YES
@@ -230,7 +243,7 @@ then
         echo "This MacBookPro cannot boot Big Sur without OpenCore." $MODEL
         echo "You need OpenCore and the khronokernel DSDT patch to boot this machines!"
         # assuming this selection may fit
-        PATCHMODE=--2010
+        PATCHMODE=--MBP6
         ;;
     # Macs which are not supported by Apple but supported by this patcher.
     # This currently errs on the side of blindly assuming the Mac will work.
@@ -273,10 +286,13 @@ then
     MacPro3,[1-3])
         echo "Detected a 2008-2009 Mac Pro. Using --2010 patch mode." $MODEL
         PATCHMODE=--2010
+        INSTALL_HDMI_AUDIO="YES"
         ;;
     MacPro[45],1)
         echo "Detected a 2009-2012 Mac Pro. Using --2012 patch mode." $MODEL
         PATCHMODE=--2012
+        INSTALL_HDMI_AUDIO="YES"
+        FORCE_PATCH_2012="YES"
         ;;
     iMac14,[123])
         echo "Detected a Late 2013 iMac. patch-kexts.sh is not necessary on this model." $MODEL
@@ -300,10 +316,14 @@ fi
 
 # Figure out which kexts we're installing.
 case $PATCHMODE in
---IMAC11)
+--MBP6)
     INSTALL_HDA="YES"
     INSTALL_LEGACY_USB="YES"
+    INSTALL_GFTESLA="YES"
+    INSTALL_NVENET="YES"
     INSTALL_BCM5701="YES"
+    INSTALL_NIGHTSHIFT="YES"
+    DEACTIVATE_TELEMETRY="YES"
     ;;
 --2010)
     INSTALL_HDA="YES"
@@ -312,6 +332,7 @@ case $PATCHMODE in
     INSTALL_GFTESLA="YES"
     INSTALL_NVENET="YES"
     INSTALL_BCM5701="YES"
+    INSTALL_NIGHTSHIFT="YES"
     DEACTIVATE_TELEMETRY="YES"
     ;;
 --2011)
@@ -319,9 +340,11 @@ case $PATCHMODE in
     INSTALL_HD3000="YES"
     INSTALL_LEGACY_USB="YES"
     INSTALL_BCM5701="YES"
+    INSTALL_NIGHTSHIFT="YES"
+    DISABLE_LIBRARY_VALIDATION="YES"
     ;;
 --2012)
-    if [ "x$INSTALL_WIFI" = "xNO" ]
+    if [ "x$INSTALL_WIFI" = "xNO" && "x$FORCE_PATCH_2012" != "xYES" ]
     then
         echo "Attempting --2012 mode without WiFi, which means no patch will be installed."
         echo "Exiting."
@@ -621,6 +644,20 @@ then
         unzip -q "$IMGVOL/kexts/AppleIntelHD3000GraphicsGLDriver.bundle-17G14033.zip"
         unzip -q "$IMGVOL/kexts/AppleIntelSNBGraphicsFB.kext-17G14033.zip"
         fixPerms AppleIntelHD3000* AppleIntelSNB*
+        
+        #
+        # complete the HD3000 installation for all systems
+        # prepared for feedback of 2011 MacBookPro users.
+        #
+        
+#        echo "Installing highvoltage12v patches for iMac 2011 family"
+#        echo "Using SNB and HD3000 VA bundle files"
+
+#        unzip -q "$IMGVOL/kexts/AppleIntelHD3000GraphicsVADriver.bundle-17G14033.zip"
+#        unzip -q "$IMGVOL/kexts/AppleIntelSNBVA.bundle-17G14033.zip"
+        
+#        fixPerms AppleIntelHD3000GraphicsVADriver.bundle
+#        fixPerms AppleIntelSNBVA.bundle
     fi
 
     if [ "x$INSTALL_LEGACY_USB" = "xYES" ]
@@ -710,14 +747,20 @@ then
         fixPerms AppleIntelHD3000GraphicsVADriver.bundle
         fixPerms AppleIntelSNBVA.bundle
         
-        echo "Using iMacPro1,1 enabled version of AppleIntelSNBGraphicsFB.kext"
-        echo "WhateverGreen and Lilu need to be injected by OpenCore"
-        rm -rf AppleIntelSNBGraphicsFB.kext
-        unzip -q "$IMGVOL/kexts/AppleIntelSNBGraphicsFB-AMD.kext.zip"
-        # rename AppleIntelSNBGraphicsFB-AMD.kext
-        mv AppleIntelSNBGraphicsFB-AMD.kext AppleIntelSNBGraphicsFB.kext
-        fixPerms AppleIntelSNBGraphicsFB.kext
-
+        if [ "x$INSTALL_NIKEY22" = "xYES" ]
+        then
+            echo "Using iMac12,x enabled version of AppleIntelSNBGraphicsFB.kext"
+            INSTALL_BACKLIGHTFIXUP="YES"
+            INSTALL_VIT9696="YES"
+        else
+            echo "Using iMacPro1,1 enabled version of AppleIntelSNBGraphicsFB.kext"
+            echo "WhateverGreen and Lilu need to be injected by OpenCore"
+            rm -rf AppleIntelSNBGraphicsFB.kext
+            unzip -q "$IMGVOL/kexts/AppleIntelSNBGraphicsFB-AMD.kext.zip"
+            # rename AppleIntelSNBGraphicsFB-AMD.kext
+            mv AppleIntelSNBGraphicsFB-AMD.kext AppleIntelSNBGraphicsFB.kext
+            fixPerms AppleIntelSNBGraphicsFB.kext
+        fi
     fi
 
     #
@@ -742,11 +785,9 @@ then
             INSTALL_APPLEGVA="NO"
             ;;
             # OpenCore: NVIDIA ++ cards
-            0x1198 | 0x1199 | 0x119A | 0x119f | 0x119e |0x119d |0x11e0 | 0x11e1 | 0x11b8 | 0x11b7 | 0x11b6 | 0x11bc | 0x11bd | 0x11be |0x0ffb | 0x0ffc)
-            echo "NVIDIA Kepler Kx100M, Kx000M, GTX8xx, GTX7xx Card found, assume now use of OC, device ID: " $DID
+            0x1198 | 0x1199 | 0x119a | 0x119f | 0x119e |0x119d |0x11e0 | 0x11e1 | 0x11b8 | 0x11b7 | 0x11b6 | 0x11bc | 0x11bd | 0x11be |0x0ffb | 0x0ffc)
+            echo "NVIDIA Kepler Kx100M, Kx000M, GTX8xx, GTX7xx Card found, assume now use of OC unless --nikey22 has been used, device ID: " $DID
             INSTALL_BACKLIGHT="YES"
-            INSTALL_BACKLIGHTFIXUP="YES"
-            INSTALL_VIT9696="NO"
             INSTALL_AGC="YES"
             ;;
             0x6720 | 0x6740 | 0x6741)
@@ -771,6 +812,17 @@ then
             ;;
         esac
 
+    fi
+
+    if [ "x$INSTALL_MYAGC" = "xYES" ]
+    then
+        echo 'Patching for NVIDIA GPU black screen AppleGraphicsDevicePolicy.kext'
+        
+        MYBOARD=`/usr/sbin/ioreg -l | grep board-id | awk -F\" '{ print $4 }' | grep Mac`
+        
+        /usr/libexec/PlistBuddy -c "Add :IOKitPersonalities:AppleGraphicsDevicePolicy:ConfigMap:$MYBOARD string none" AppleGraphicsControl.kext/Contents/PlugIns/AppleGraphicsDevicePolicy.kext/Contents/Info.plist
+
+        fixPerms AppleGraphicsControl.kext
     fi
 
     if [ "x$INSTALL_AGC" = "xYES" ]
@@ -826,9 +878,29 @@ then
     
     popd > /dev/null
     
+    #
+    # leaving /System/Library/Extensions with this call of popd
+    #
+    
+    #
+    # MacPro3,x and MacPro5,x HDMI Audio to /Library/Extensions
+    #
+    if [ "x$INSTALL_HDMI_AUDIO" = "xYES" ]
+    then
+        pushd "$VOLUME/Library/Extensions" > /dev/null
+
+        echo 'Installing (for MacPro3,x and MacPro5,x)  HDMIAudio.kext'
+
+        rm -rf HDMIAudio.kext
+        unzip -q "$IMGVOL/kexts/HDMIAudio.kext.zip"
+        
+        fixPerms HDMIAudio.kext
+        popd > /dev/null
+    fi
     
     #
     # extended whitelist patching for BCM94331CD (this is no 802.11ac card)
+    # Mac-00BE6ED71E35EB86 is the iMac13,1 possibly one should use an ID of a still supported system!
     #
     if [ "x$INSTALL_WHITELIST" = "xYES" ]
     then
@@ -905,9 +977,6 @@ then
         popd > /dev/null
     fi
 
-    
-    
-
     if [ "x$DISABLE_LIBRARY_VALIDATION" = "xYES" ]
     then
        echo 'Disable Library Validation'
@@ -925,6 +994,25 @@ then
         fi
             
         exzip "$IMGVOL/Preferences/com.apple.security.libraryvalidation.plist.zip"
+        
+        popd > /dev/null
+    fi
+    
+    if [ "x$ENABLE_SAVE_BOOT" = "xYES" ]
+    then
+       echo 'Enable Save Boot for iMac 2009-2011 and 2012/2013 Macs'
+        
+        pushd "$VOLUME/System/Library/CoreServices" > /dev/null
+
+        if [ -f PlatformSupport.plist.original ]
+        then
+            rm PlatformSupport.plist
+        elif [ -f PlatformSupport.plist ]
+        then
+            mv PlatformSupport.plist PlatformSupport.plist.original
+        fi
+            
+        exzip "$IMGVOL/Preferences/PlatformSupport.plist.zip"
         
         popd > /dev/null
     fi
@@ -1058,7 +1146,11 @@ else
     # iMac specific additions. If these changes do not exist the commands below
     #  will not change the AppleGraphicsControl at all
     
-    /usr/libexec/PlistBuddy -c 'Delete :IOKitPersonalities:AppleGraphicsDevicePolicy:ConfigMap:Mac-7BA5B2D9E42DDD94 string none' AppleGraphicsControl.kext/Contents/PlugIns/AppleGraphicsDevicePolicy.kext/Contents/Info.plist
+    MYBOARD=`/usr/sbin/ioreg -l | grep board-id | awk -F\" '{ print $4 }' | grep Mac`
+        
+    /usr/libexec/PlistBuddy -c "Delete :IOKitPersonalities:AppleGraphicsDevicePolicy:ConfigMap:$MYBOARD string none" AppleGraphicsControl.kext/Contents/PlugIns/AppleGraphicsDevicePolicy.kext/Contents/Info.plist
+    
+    /usr/libexec/PlistBuddy -c 'Delete :IOKitPersonalities:AppleGraphicsDevicePolicy:ConfigMap:Mac-7BA5B2D9E42DDD94' AppleGraphicsControl.kext/Contents/PlugIns/AppleGraphicsDevicePolicy.kext/Contents/Info.plist
 
     /usr/libexec/PlistBuddy -c 'Delete :IOKitPersonalities:AppleGraphicsDevicePolicy:ConfigMap:Mac-942B59F58194171B' ./AppleGraphicsControl.kext/Contents/PlugIns/AppleGraphicsDevicePolicy.kext/Contents/Info.plist
 
