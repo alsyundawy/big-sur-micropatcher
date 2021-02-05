@@ -14,7 +14,7 @@ This option has now been included to all systems and to patchmodes 2010 and 2011
 
 Using the command line option `/Volumes/Install\ macOS\ Big\ Sur/patch-kexts.sh --whitelist` you can enable HandOff and Continiuty with BCM94331CD cards.
 
-Using the command line option `/Volumes/Install\ macOS\ Big\ Sur/patch-kexts.sh --saveboot` modifies the SystemPlatform.plist to include most compatible systems supported here iMac 2009, iMac 2010, all 2011-2013 Macs. 
+Experimental: Using the command line option `/Volumes/Install\ macOS\ Big\ Sur/patch-kexts.sh --saveboot` modifies the SystemPlatform.plist to include most compatible systems supported here iMac 2009, iMac 2010, all 2011-2013 Macs. 
 
 Deprecated: Forcing iMac12,x Mid 2011 models to run without OpenCore users may use this option  `/Volumes/Install\ macOS\ Big\ Sur/patch-kexts.sh --nikey22`. Just use the install-setvars.sh utility in step 7 as usual then.
 
