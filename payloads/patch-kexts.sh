@@ -786,7 +786,7 @@ then
             ;;
             # OpenCore: NVIDIA ++ cards
             0x1198 | 0x1199 | 0x119a | 0x119f | 0x119e |0x119d |0x11e0 | 0x11e1 | 0x11b8 | 0x11b7 | 0x11b6 | 0x11bc | 0x11bd | 0x11be |0x0ffb | 0x0ffc)
-            echo "NVIDIA Kepler Kx100M, Kx000M, GTX8xx, GTX7xx Card found, assume now use of OC, device ID: " $DID
+            echo "NVIDIA Kepler Kx100M, Kx000M, GTX8xx, GTX7xx Card found, assume now use of OC unless --nikey22 has been used, device ID: " $DID
             INSTALL_BACKLIGHT="YES"
             INSTALL_AGC="YES"
             ;;

@@ -1,11 +1,11 @@
 # big-sur-micropatcher (Version dev-v0.5.4) iMac 2009-2011 edition
 A primitive USB patcher for installing macOS Big Sur on unsupported Macs
 
-By the way, if you have a Mac Pro, [Big Mac](https://github.com/StarPlayrX/bigmac) by StarPlayrX is another patcher worth considering. For 2008 Mac Pros (MacPro3,1) in particular, Big Mac is clearly a better option than this patcher (at least for now).
+If you have any questions about user experiences and usability of this software please check this [thread](https://forums.macrumors.com/threads/macos-11-big-sur-on-unsupported-macs-thread.2242172/). On the first post you will find general information, a hardware support list, a FAQ and other patcher options for Big Sur. Users on the forum may answer your questions. But this is no genius bar replacement and no secret support organisation for unsupported systems - get help and help others in return.
 
 This version has been forked of the current 0.5.1 version @Barry K. Nathan developed and published enhanced with all necessary patches to install Big Sur on iMac models as: iMac 27" Late 2009 (core i series CPU), iMac Mid 2010 (all systems), iMac Mid 2011 (all systems) if these iMacs have been upgraded with an metal GPU in advance. You may also install Big Sur on stock Apple iMac models listed above, but without graphics accerelation the usability will be near the absolute Zero. Cold....
 
-Optionally you can now use a preconfigured opencore 0.6.6 setup to enably boot and installation of Big Sur on iMac Late 2009 and Mid 2010 as well as on MacBookPro 6,x systems. Please note that no specific patches have been preconfigured with the MacBookPro 6,x series so far. 
+You can now use a preconfigured opencore 0.6.6 setup to enably boot and installation of Big Sur on iMac Late 2009 and Mid 2010 as well as on MacBookPro 6,x systems. Please note that no specific patches have been preconfigured with the MacBookPro 6,x series so far.  This OpenCore just enables backlight on the internal display and brighness control for some cards as well as it is used tto set the iMacPro1,1 ID. This way hardware acceleration features of the AMD GPU can be enabled as well as DRM decoding. It does not change the system serial or other setings which may conflict with Apple iCloud usage.
 
 Using the command line option `/Volumes/Install\ macOS\ Big\ Sur/patch-kexts.sh --ns` you can enable Night Shift on nearly all machines. This option has now been included to all systems and to patchmode 2010 and 2011. Exception: Since some 2012 and 2013 are currenly not patched at all unless the WiFi cards needs a patch one has to decide: Do I want a clean system with full Apple filesystem integrity checks or do I need this nice to have feature. Normally the patcher exits currently in those cases 2012/2013 Macs gracefully. But you can force Night Shift (and other options) to be enabled on such systems by calling  `/Volumes/Install\ macOS\ Big\ Sur/patch-kexts.sh --ns --force`
 
@@ -13,7 +13,7 @@ Using the command line option `/Volumes/Install\ macOS\ Big\ Sur/patch-kexts.sh 
 
 Using the command line option `/Volumes/Install\ macOS\ Big\ Sur/patch-kexts.sh --saveboot` modifies the SystemPlatform.plist to include most compatible systems supported here iMac 2009, iMac 2010, all 2011-2013 Macs. 
 
-Deprecated: Forcing iMac12,x Mid 2011 models to run without OpenCore users may use this option  `/Volumes/Install\ macOS\ Big\ Sur/patch-kexts.sh --nikey22`
+Deprecated: Forcing iMac12,x Mid 2011 models to run without OpenCore users may use this option  `/Volumes/Install\ macOS\ Big\ Sur/patch-kexts.sh --nikey22`. Just use the install-setvars.sh utility in step 7 as usual then.
 
 You may use this patcher as a 100% replacement to the current original. No features have been deleted. There are only enhancements. 
 
