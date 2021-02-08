@@ -913,8 +913,13 @@ then
 
         # check if there exist a ContinuitySupport entry for this particular system
         RESULT=`/usr/libexec/PlistBuddy -c "Print:$MYBOARD:ContinuitySupport" "IOBluetooth.framework/Versions/A/Resources/SystemParameters.plist"`
-
+        
         if [ "x$RESULT" = "xfalse" ]
+        then
+            WIFIPATCH="YES"
+        fi
+        
+        if [ "x$WIFIPATCH" = "xYES" ]
         then
             echo 'patching IOBluetooth.framework for Continuity and HandOff for board-id ' $MYBOARD
             
@@ -933,7 +938,7 @@ then
         
         pushd "$VOLUME/System/Library/Extensions" > /dev/null
  
-        if [ "x$RESULT" = "xfalse" ]
+        if [ "x$WIFIPATCH" = "xYES" ]
         then
             pushd "$VOLUME/System/Library/Extensions" > /dev/null
 
@@ -950,6 +955,35 @@ then
 
         fi
     fi
+    
+    if [ "x$INSTALL_WIFI" = "xNO" ]
+    then
+        pushd "$VOLUME/System/Library/Frameworks" > /dev/null
+        
+        # getting board-id of the system
+        MYBOARD=`/usr/sbin/ioreg -l | grep board-id | awk -F\" '{ print $4 }' | grep Mac`
+
+        # check if there exist a ContinuitySupport entry for this particular system
+        RESULT=`/usr/libexec/PlistBuddy -c "Print:$MYBOARD:ContinuitySupport" "IOBluetooth.framework/Versions/A/Resources/SystemParameters.plist"`
+
+        if [ "x$RESULT" = "xfalse" ]
+        then
+            echo 'patching IOBluetooth.framework for Continuity and HandOff for board-id ' $MYBOARD
+            
+            /usr/libexec/PlistBuddy -c "Set:$MYBOARD:ContinuitySupport true" "IOBluetooth.framework/Versions/A/Resources/SystemParameters.plist"
+            # read again and check
+            RESULT=`/usr/libexec/PlistBuddy -c "Print:$MYBOARD:ContinuitySupport" "IOBluetooth.framework/Versions/A/Resources/SystemParameters.plist"`
+            
+            echo 'Continuity for ' $MYBOARD 'set to: ' $RESULT
+        else
+            echo 'your system with board-id' $MYBOARD 'has no black list entry'
+            echo 'and will possibly support Continuity and HandOff out of the box.'
+        fi
+        fixPerms IOBluetooth.framework
+
+        popd > /dev/null
+    fi
+
     
     if [ "x$INSTALL_WIFI" = "xNO" ]
     then
