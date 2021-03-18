@@ -138,6 +138,10 @@ do
         INSTALL_APPLEGVA="YES"
         DISABLE_LIBRARY_VALIDATION="YES"
         ;;
+    --R3000)
+        echo "Experimental: Adding High Sierra R3000 Extensions to avoid kmutil linker error (MacBookPro6,x MacBookPro8,x)"
+        INSTALL_Radeon3000X="YES"
+        ;;
     --model=iMac12)
         echo "Experimental: selected model iMac12,x"
         MODEL="iMac12,1"
@@ -259,9 +263,14 @@ then
         echo "Detected a 2006-2009 iMac. Using --2010 patch mode." $MODEL
         PATCHMODE=--2010
         ;;
-    Macmini5,?|MacBookAir4,?|MacBookPro8,?)
+    Macmini5,?|MacBookAir4,?)
         echo "Detected a 2011 Mac. Using --2011 patch mode." $MODEL
         PATCHMODE=--2011
+        ;;
+    MacBookPro8,?)
+        echo "Detected a 2011 MacBookPro. Using --2011 patch mode." $MODEL
+        PATCHMODE=--2011
+        INSTALL_Radeon3000X="YES"
         ;;
     iMac11,?)
         echo "Detected a Late 2009 or Mid 2010 11,x iMac" $MODEL
@@ -322,6 +331,7 @@ case $PATCHMODE in
     INSTALL_GFTESLA="YES"
     INSTALL_NVENET="YES"
     INSTALL_BCM5701="YES"
+    INSTALL_Radeon3000X="YES"
     INSTALL_NIGHTSHIFT="YES"
     DISABLE_LIBRARY_VALIDATION="YES"
     DEACTIVATE_TELEMETRY="YES"
@@ -661,6 +671,16 @@ then
 #        fixPerms AppleIntelHD3000GraphicsVADriver.bundle
 #        fixPerms AppleIntelSNBVA.bundle
     fi
+    
+    if [ "x$INSTALL_Radeon3000X" = "xYES" ]
+    then
+        echo 'Installing High Sierra AMDRadeonX3000 kexts'
+        rm -rf AMDRadeonX3000*
+        unzip -q "$IMGVOL/kexts/AMDRadeonX3000.kext.zip"
+         
+        fixPerms AMDRadeonX3000*
+    fi
+
 
     if [ "x$INSTALL_LEGACY_USB" = "xYES" ]
     then
