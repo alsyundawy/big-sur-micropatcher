@@ -816,7 +816,7 @@ then
             echo "Original AMD HD 67x0 card found, device ID: " $DID
             echo "Big Sur and will run without any graphics acceleration"
             ;;
-            0x68c1 | 0x68d8)
+            0x68c0 | 0x68c1 | 0x68d8)
             echo "Original AMD HD 5xx0 card found, device ID: " $DID
             echo "Big Sur and will run without any graphics acceleration"
             ;;
