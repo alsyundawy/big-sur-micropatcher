@@ -1,5 +1,7 @@
 # big-sur-micropatcher (Version 0.5.4) iMac 2009-2011 edition
 
+Development has stopped in spring 2021 when I moved all implementation and patching details into the [OCLP project](https://github.com/dortania/OpenCore-Legacy-Patcher/). Please migrate to OCLP!
+
 A primitive USB patcher for installing macOS Big Sur on unsupported Macs
 
 If you have any questions about user experiences and usability of this software please check this [thread](https://forums.macrumors.com/threads/macos-11-big-sur-on-unsupported-macs-thread.2242172/). On the first post you will find general information, a hardware support list, a FAQ and other patcher options for Big Sur. Users on the forum may answer your questions. But this is no genius bar replacement and no secret support organisation for unsupported systems - get help and help others in return.
